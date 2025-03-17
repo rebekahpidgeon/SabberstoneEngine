@@ -6,10 +6,13 @@ using SabberStoneCore.Model.Entities;
 using SabberStoneBasicAI.AIAgents;
 using SabberStoneCore.Tasks.PlayerTasks;
 using System.Collections.Generic;
+using SabberStoneCore.Model;
+
+// Modified 17/03/2025 made POGameHandler public. Set repeat draws in POGameHandler constructor. Player 1's cards are tracked and added to game stats
 
 namespace SabberStoneBasicAI.PartialObservation
 {
-	class POGameHandler
+	public class POGameHandler
 	{
 		private AbstractAgent player1;
 		private AbstractAgent player2;
@@ -28,6 +31,8 @@ namespace SabberStoneBasicAI.PartialObservation
 			this.gameConfig = gameConfig;
 			this.setupHeroes = setupHeroes;
 			this.player1 = player1;
+			this.repeatDraws = repeatDraws;
+
 			player1.InitializeAgent();
 
 			this.player2 = player2;
@@ -38,6 +43,7 @@ namespace SabberStoneBasicAI.PartialObservation
 
 		public bool PlayGame(bool addToGameStats = true, bool debug = false)
 		{
+			HashSet<Card> playedCards = new HashSet<Card>();
 			SabberStoneCore.Model.Game game = new SabberStoneCore.Model.Game(gameConfig, setupHeroes);
 			//var game = new Game(gameConfig, setupHeroes);
 			player1.InitializeGame();
@@ -109,6 +115,13 @@ namespace SabberStoneBasicAI.PartialObservation
 						printGame = true;
 
 					game.Process(playertask);
+
+					// Only track player one's played cards and only cards played from hand as a 'PlayerTask'
+					if (game.CurrentPlayer == game.Player1 && playertask.PlayerTaskType == PlayerTaskType.PLAY_CARD)
+					{
+						Card card = playertask.Source.Card;
+						playedCards.Add(card);
+					}
 				}
 #if DEBUG
 			}
@@ -130,7 +143,7 @@ namespace SabberStoneBasicAI.PartialObservation
 				return false;
 
 			if (addToGameStats)
-				gameStats.addGame(game, watches);
+				gameStats.addGame(game, watches, playedCards);
 
 			player1.FinalizeGame();
 			player2.FinalizeGame();

@@ -4,9 +4,11 @@ using SabberStoneCore.Tasks.PlayerTasks;
 using SabberStoneCore.Model;
 using SabberStoneCore.Enums;
 
+// Modified 17/03/2025 AbstractAgent made public
+
 namespace SabberStoneBasicAI.AIAgents
 {
-	abstract class AbstractAgent
+	public abstract class AbstractAgent
 
 	{
 		public List<Card> preferedDeck;
