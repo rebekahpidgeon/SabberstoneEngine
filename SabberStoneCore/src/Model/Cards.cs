@@ -304,6 +304,9 @@ namespace SabberStoneCore.Model
 					return FromId("GIL_504h");
 				case 48145:
 					return FromId("BOT_238p");
+				// Modified 17/03/2025, added case for Berserker Throw hero power
+				case 50579:
+					return FromId("TRL_065h");
 				default:
 					throw new NotImplementedException();
 			}

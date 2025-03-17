@@ -9,9 +9,11 @@ using SabberStoneCore.Model.Zones;
 using SabberStoneCore.Tasks.PlayerTasks;
 using SabberStoneBasicAI.Meta;
 
+// Modified 17/03/2025 Made POGame public
+
 namespace SabberStoneBasicAI.PartialObservation
 {
-	partial class POGame
+	public partial class POGame
 	{
 		// define variable for "No Way!" card 
 		private static readonly Card PlaceHolder = Cards.FromId("LOEA04_31b");

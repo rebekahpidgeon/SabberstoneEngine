@@ -6,10 +6,13 @@ using SabberStoneBasicAI.PartialObservation;
 using System.Collections.Generic;
 
 //Developed by Oskar Kirmis and Florian Koch and submitted to the 2018 Hearthstone AI Competition's Premade Deck Playing Track
+
+//Modified 17/03/2025, changed the Score function to use RampScore for every class. GreedyAgent made public
+
 namespace SabberStoneBasicAI.AIAgents
 {
 	// Plain old Greedy Bot
-	class GreedyAgent : AbstractAgent
+	public class GreedyAgent : AbstractAgent
 	{
 		public override void InitializeAgent() { }
 		public override void InitializeGame() { }
@@ -41,12 +44,7 @@ namespace SabberStoneBasicAI.AIAgents
 		private static int Score(POGame state, int playerId)
 		{
 			var p = state.CurrentPlayer.PlayerId == playerId ? state.CurrentPlayer : state.CurrentOpponent;
-			switch (state.CurrentPlayer.HeroClass)
-			{
-				case CardClass.WARRIOR: return new AggroScore { Controller = p }.Rate();
-				case CardClass.MAGE: return new ControlScore { Controller = p }.Rate();
-				default: return new RampScore { Controller = p }.Rate();
-			}
+			return new RampScore { Controller = p }.Rate();
 		}
 	}
 }

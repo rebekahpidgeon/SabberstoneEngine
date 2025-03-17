@@ -4,9 +4,12 @@ using System.Diagnostics;
 using SabberStoneCore.Enums;
 using SabberStoneCore.Model;
 
+// Modified 17/03/2025 Made GameStats public. GameStats now stores health difference between player 1 and 2. cardsPlayed is a
+// new parameter for addGame which allows cards played in the game to be added to the stats
+
 namespace SabberStoneBasicAI.PartialObservation
 {
-	class GameStats
+	public class GameStats
 	{
 		private int turns = 0;
 		private int nr_games = 0;
@@ -15,6 +18,8 @@ namespace SabberStoneBasicAI.PartialObservation
 		private double[] time_per_player = new[] { 0D, 0D };
 		private int[] exception_count = new[] { 0, 0 };
 		private Dictionary<int, string> exceptions = new Dictionary<int, string>();
+		public List<double> gameHealthDifferences = new List<double>();
+		public Dictionary<HashSet<Card>, PlayState> cardsPlayedPerGame = new Dictionary<HashSet<Card>, PlayState>();
 
 		//Todo add getter for each private variable
 
@@ -23,7 +28,7 @@ namespace SabberStoneBasicAI.PartialObservation
 		}
 
 
-		public void addGame(Game game, Stopwatch[] playerWatches)
+		public void addGame(Game game, Stopwatch[] playerWatches, HashSet<Card> cardsPlayed)
 		{
 			nr_games++;
 			turns += game.Turn;
@@ -34,9 +39,12 @@ namespace SabberStoneBasicAI.PartialObservation
 				wins[1]++;
 			else
 				draws++;
+			gameHealthDifferences.Add(game.Player1.Hero.Health - game.Player2.Hero.Health);
 
 			time_per_player[0] += playerWatches[0].Elapsed.TotalMilliseconds;
 			time_per_player[1] += playerWatches[1].Elapsed.TotalMilliseconds;
+
+			cardsPlayedPerGame.Add(cardsPlayed, game.Player1.PlayState);
 		}
 
 		public void registerException(Game game, Exception e)
